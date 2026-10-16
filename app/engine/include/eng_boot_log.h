@@ -38,6 +38,10 @@ void eng_boot_log_flush(void);
 void eng_boot_log_kick(void);
 /* Crash-handler use only: write still-queued lines to `fd` (no locks). */
 void eng_boot_log_crash_drain(int fd);
+/* Cut the query off every URL in `s`, in place ("https://h/p?..."): a link's
+ * key or signed token (a TorBox link carries the account's API key) must not
+ * reach the log file or klog. Every log sink calls it before writing. */
+void eng_log_redact(char *s);
 
 /* Preferred names for new code — the file carries far more than the boot. */
 #define eng_log        eng_boot_log

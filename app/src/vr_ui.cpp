@@ -503,6 +503,14 @@ void vr_ui_apply_format()
 }
 
 /* -- library ----------------------------------------------------------------- */
+/* A URL for the log: no query, which can hold a key or a signed token
+ * (TorBox's CDN links carry the account's API key). */
+static std::string log_url(const std::string &url)
+{
+    const size_t q = url.find('?');
+    return q == std::string::npos ? url : url.substr(0, q) + "?...";
+}
+
 struct VrLibrary::Job {
     pthread_t t;
     VrSrc where;
@@ -594,7 +602,7 @@ int VrLibrary::input(const app_input_state &in, std::string &url, std::string &t
     poll();
     if (m_have_chosen) {
         m_have_chosen = false;
-        eng_bt("library: play %s (vr \"%s\")", m_chosen.url.c_str(), m_chosen.vr.c_str());
+        eng_bt("library: play %s (vr \"%s\")", log_url(m_chosen.url).c_str(), m_chosen.vr.c_str());
         url = m_chosen.url;
         title = m_chosen.name;
         vr = m_chosen.vr;
@@ -624,7 +632,7 @@ int VrLibrary::input(const app_input_state &in, std::string &url, std::string &t
     if (p & APP_BTN_CROSS && m_focus < n) {
         const VrSrc e = m_items[m_focus];
         if (e.kind == SRC_PLAY) {
-            eng_bt("library: play %s (vr \"%s\")", e.url.c_str(), e.vr.c_str());
+            eng_bt("library: play %s (vr \"%s\")", log_url(e.url).c_str(), e.vr.c_str());
             url = e.url;
             title = e.name;
             vr = e.vr;
@@ -642,7 +650,7 @@ int VrLibrary::input(const app_input_state &in, std::string &url, std::string &t
             vr_hands_request(st.hands_needed());
             m_items[m_focus].detail = vr_control_name(st.control);
             eng_bt("ps5vr: hands & eyes: %s", vr_control_name(st.control));
-        } else if (e.kind == SRC_SITE_VIDEO) {
+        } else if (e.kind == SRC_SITE_VIDEO || e.kind == SRC_TB_FILE) {
             start(e, 1);
         } else if (e.kind != SRC_INFO) {
             m_stack.push_back(e);

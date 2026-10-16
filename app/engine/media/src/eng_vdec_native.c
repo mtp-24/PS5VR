@@ -370,6 +370,7 @@ static void note(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(msg, sizeof msg, fmt, ap);
     va_end(ap);
+    eng_log_redact(msg);
 
 #if defined(ENG_BOOT_TRACE_POPUP)
     struct v2n_note n;

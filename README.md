@@ -48,6 +48,7 @@ PS VR2 compositor, at 120 Hz.
 - DeoVR and HereSphere libraries (Stash, XBVR and many VR sites)
 - Real-Debrid downloads, with parallel read-ahead (6 connections) for big
   files over the internet
+- TorBox downloads (torrents, usenet and web downloads), the same way
 - A settings page on your phone or computer for feeds, libraries and tokens
 
 **In the headset**
@@ -80,7 +81,7 @@ kstuff, ShadowMount+ and etaHEN, and on 12.40) and a PS VR2.
 3. Put videos in `/data/ps5vr/videos` (FTP), on a USB drive, or on a media
    server, and start PS5VR from the home screen with the headset on.
 
-Settings for feeds, DeoVR/HereSphere libraries and Real-Debrid are at
+Settings for feeds, DeoVR/HereSphere libraries, Real-Debrid and TorBox are at
 `http://<your PS5's IP>:8090` (shown in the library).
 
 ---

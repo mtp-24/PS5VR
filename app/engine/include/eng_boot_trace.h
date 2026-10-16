@@ -40,6 +40,7 @@ static inline void eng_bt_(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(r.msg, sizeof r.msg, fmt, ap);
     va_end(ap);
+    eng_log_redact(r.msg);
 
 #ifdef ENG_BOOT_TRACE_POPUP
     /* On-screen popup - opt-in (--breadcrumbs), for watching the TV without

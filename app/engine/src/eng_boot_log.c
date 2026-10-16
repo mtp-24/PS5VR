@@ -5,6 +5,32 @@
 #include <stdio.h>
 #include <string.h>
 
+/* Each "scheme://..." up to a space, quote or bracket loses what follows its
+ * first '?': "?..." stays, so a reader sees there was one. */
+void eng_log_redact(char *s)
+{
+    if (!s)
+        return;
+    for (char *u = strstr(s, "://"); u; u = strstr(u, "://")) {
+        u += 3;
+        const size_t url = strcspn(u, " \t\r\n\"'<>()[]{}");
+        char *q = memchr(u, '?', url);
+        if (!q) {
+            u += url;
+            continue;
+        }
+        char *end = u + url;
+        if (end - q >= 4) {
+            memcpy(q, "?...", 4);
+            memmove(q + 4, end, strlen(end) + 1);
+            u = q + 4;
+        } else {                /* "?a": dots in place, so the line never grows */
+            memset(q + 1, '.', (size_t)(end - q - 1));
+            u = end;
+        }
+    }
+}
+
 #ifdef ENG_APP_MODULE
 
 #include <pthread.h>
@@ -218,6 +244,7 @@ void eng_boot_log(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(line, sizeof line, fmt, ap);
     va_end(ap);
+    eng_log_redact(line);
 
     printf("PS5VR: %s\n", line);
     fflush(stdout);

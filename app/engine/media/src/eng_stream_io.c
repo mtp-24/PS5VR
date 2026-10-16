@@ -316,7 +316,13 @@ int eng_stream_io_open(const char *path,
 {
     if (!path || !out_fmt_ctx) return -1;
 
-    SIO_BC("P8_01a_SIO_ENTER", path);
+    {
+        /* Logged without its query: a link's key or signed token stays out of the log. */
+        char logged[256];
+        snprintf(logged, sizeof logged, "%.*s%s", (int)strcspn(path, "?"), path,
+                 strchr(path, '?') ? "?..." : "");
+        SIO_BC("P8_01a_SIO_ENTER", logged);
+    }
     eng_stream_io_ctx_t *ctx = (eng_stream_io_ctx_t *)eng_direct_mem_calloc(1, sizeof(eng_stream_io_ctx_t));
     if (!ctx) ctx = (eng_stream_io_ctx_t *)calloc(1, sizeof(eng_stream_io_ctx_t));
     if (!ctx) return -1;
